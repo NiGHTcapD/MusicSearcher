@@ -15,24 +15,24 @@ import lombok.NoArgsConstructor;
 @ApiModel(value="FrontPageRequest", description="It comes from the front page in many (MANY) boxes. The logic to handle all this can be found in SongSearchController, so don't worry about the vast quantities.")
 public class FrontPageRequest {
 
-    @ApiModelProperty(name="song-title",required = true)
+    @ApiModelProperty(name="songTitle",required = true)
     String songTitle;
     @ApiModelProperty(name="artist",required = true)
     String artist;
 
-    @ApiModelProperty(name="beats-per",required = true)
+    @ApiModelProperty(name="beatsPer",required = true)
     String beatsPer;
-    @ApiModelProperty(name="beats-per-many",required = true)
+    @ApiModelProperty(name="beatsPerMany",required = true)
     int beatsPerMany;
 
-    @ApiModelProperty(name="music-keys",required = true)
+    @ApiModelProperty(name="musicKeys",required = true)
     String musicKeys;
-    @ApiModelProperty(name="music-keys-many",required = true)
+    @ApiModelProperty(name="musicKeysMany",required = true)
     int musicKeysMany;
 
-    @ApiModelProperty(name="time-signs",required = true)
+    @ApiModelProperty(name="timeSigns",required = true)
     String timeSigns;
-    @ApiModelProperty(name="time-signs-many",required = true)
+    @ApiModelProperty(name="timeSignsMany",required = true)
     int timeSignsMany;
 
 

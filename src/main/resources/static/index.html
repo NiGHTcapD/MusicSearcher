@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Frontpage</title>
+</head>
+<body>
+
+    <form action="new-index">
+<!--Input song title-->
+        <label for="songTitle">Song title:</label><br>
+        <input type="text" id="songTitle" name="songTitle"><br>
+<!--Input artist name-->
+        <label for="artist">Artist:</label><br>
+        <input type="text" id="artist" name="artist"><br>
+
+
+<!--Input BPM(s)-->
+        <label for="beatsPer">BPM:</label><br>
+        <input type="text" id="beatsPer" name="beatsPer"><br>
+<!--On-off button for multiples, disables one box and enables the other-->
+<!--dropdown for multiple BPM; "yes", 2, 3, 4, 5, 6,...-->
+        <label for="beatsPerMany">Searching for multiple BPMs? How many?</label>
+        <input type="number" id="beatsPerMany" name="beatsPerMany" min="0" max="11" step="1" value="1">
+
+<!--Input key(s)-->
+        <label for="musicKeys">Key:</label><br>
+        <input type="text" id="musicKeys" name="musicKeys"><br>
+<!--On-off button for multiples, disables one box and enables the other-->
+<!--dropdown for multiple key; "yes", 2, 3, 4, 5, 6,...-->
+        <label for="musicKeysMany">Searching for multiple keys? How many?</label>
+        <input type="number" id="musicKeysMany" name="musicKeysMany" min="0" max="11" step="1" value="1">
+
+<!--Input time signatures(s)-->
+        <label for="timeSigns">Time signature:</label><br>
+        <input type="text" id="timeSigns" name="timeSigns"><br>
+<!--On-off button for multiples, disables one box and enables the other-->
+<!--dropdown for multiple signs; "yes", 2, 3, 4, 5, 6,...-->
+        <label for="timeSignsMany">Searching for multiple signatures? How many?</label><!--Double-buttoned. Fix in the future.-->
+        <input type="number" id="timeSignsMany" name="timeSignsMany" min="0" max="11" step="1" value="1">
+
+
+<!--Submit button for searching-->
+        <!--<button id="SearchButton">Search with all active fields</button>-->
+        <input type="button" onclick="this.form.action='search'; this.form.submit()" value="Search with all active fields">
+<!--Submit button for new data-->
+            <!--<button id="UpdateButton">Submit a new song with all active fields</button>--><!--Double-buttoned. Fix in the future.-->
+        <input type="button" onclick="this.form.action='new-index'; this.form.submit()" value="Submit a new song with all active fields">
+
+        <input type="reset">
+        <!--Doesn't hur tto have this-->
+    </form>
+
+</body>
+</html>

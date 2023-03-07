@@ -34,9 +34,8 @@ public class SongsService {
         Songs newSong = new Songs(songTitle, Artist);
         Songs sung = songsRepository.saveAndFlush(newSong);
 
-        //use a helper function to get the id ge
-        //evil floating point bit level hacking (WTF?)
-        int latest=latestHit(songTitle);
+
+        int latest=songsRepository.LatestHit();
 
         for (int beat : beats)
         {
@@ -52,18 +51,18 @@ public class SongsService {
             musicKeyService.createMusicKeyPair(key, songTitle, latest);
         }
         //if more than one...
-        if (beats.size()>1){
+        if (keys.size()>1){
             musicKeyService.createMusicKeyPair(String.valueOf(-1), songTitle, latest);
-            musicKeyService.createMusicKeyPair(String.valueOf(0-beats.size()), songTitle, latest);
+            musicKeyService.createMusicKeyPair(String.valueOf(0-keys.size()), songTitle, latest);
         }
         for (String sig : sigs)
         {
             timeSignatureService.createTimeSignaturePair(sig, songTitle, latest);
         }
         //if more than one...
-        if (beats.size()>1){
+        if (sigs.size()>1){
             timeSignatureService.createTimeSignaturePair(String.valueOf(-1), songTitle, latest);
-            timeSignatureService.createTimeSignaturePair(String.valueOf(0-beats.size()), songTitle, latest);
+            timeSignatureService.createTimeSignaturePair(String.valueOf(0-sigs.size()), songTitle, latest);
         }
     }
 

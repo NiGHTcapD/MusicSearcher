@@ -39,11 +39,11 @@ public class SongSearchController {
         this.timeSignatureService = timeSignatureService;
     }
 
-    @GetMapping(value = "/index", produces = MediaType.TEXT_HTML_VALUE)
-    @ResponseBody
-    public String index(){
-        return "forward:frontpage.html";
-    }
+    //@GetMapping(value = "/index", produces = MediaType.TEXT_HTML_VALUE)
+    //@ResponseBody
+    //public String index(){
+    //    return "forward:index.html";
+    //}
 
     @GetMapping("new-index")
     public String indexNewSong(@ModelAttribute FrontPageRequest requestData) {
@@ -56,7 +56,7 @@ public class SongSearchController {
         //and send them into
         songsService.createSong(requestData.songTitle, requestData.artist, beats, keys, sigs);
 
-        return "called new-index";
+        return "index.html";
     }
 
     protected void convertToLists(FrontPageRequest requestData) {
@@ -77,7 +77,7 @@ public class SongSearchController {
     @GetMapping("search")
     public String SearchForSongs(@ModelAttribute FrontPageRequest requestData) {
         //an array of Int arrays
-        List<List<Integer>> identifiers = null;
+        List<List<Integer>> identifiers = new ArrayList();
 
 
         //do logic to all incoming data and strings...mostly strings
