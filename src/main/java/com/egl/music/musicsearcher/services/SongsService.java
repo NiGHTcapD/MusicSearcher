@@ -1,13 +1,16 @@
 package com.egl.music.musicsearcher.services;
 
 import com.egl.music.musicsearcher.models.Songs;
+import com.egl.music.musicsearcher.models.SongsReturnable;
 import com.egl.music.musicsearcher.models.TimeSignature;
 import com.egl.music.musicsearcher.repository.SongsRepository;
 import com.egl.music.musicsearcher.repository.TimeSignatureRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.egl.music.musicsearcher.models.Songs.latestHit;
 
@@ -44,7 +47,7 @@ public class SongsService {
         //if more than one beat, add a -1 beat and a -2 if two beats, -3 if 3 beats, etc
         if (beats.size()>1){
             bpmService.createBPMPair(-1, songTitle, latest);
-            bpmService.createBPMPair(0-beats.size(), songTitle, latest);
+            bpmService.createBPMPair(-beats.size(), songTitle, latest);
         }
         for (String key : keys)
         {
@@ -53,7 +56,7 @@ public class SongsService {
         //if more than one...
         if (keys.size()>1){
             musicKeyService.createMusicKeyPair(String.valueOf(-1), songTitle, latest);
-            musicKeyService.createMusicKeyPair(String.valueOf(0-keys.size()), songTitle, latest);
+            musicKeyService.createMusicKeyPair(String.valueOf(-keys.size()), songTitle, latest);
         }
         for (String sig : sigs)
         {
@@ -62,25 +65,50 @@ public class SongsService {
         //if more than one...
         if (sigs.size()>1){
             timeSignatureService.createTimeSignaturePair(String.valueOf(-1), songTitle, latest);
-            timeSignatureService.createTimeSignaturePair(String.valueOf(0-sigs.size()), songTitle, latest);
+            timeSignatureService.createTimeSignaturePair(String.valueOf(-sigs.size()), songTitle, latest);
         }
     }
 
 
+
+
+
     public List<Integer> getSongByName(String songName) {
-        List<Integer> songIdList = songsRepository.findBySongTitle(songName);
-        return songIdList;
+        return songsRepository.findBySongTitle(songName);
     }
 
 
     public List<Integer> getSongByArtist(String artist) {
-        List<java.lang.Integer> songIdList = songsRepository.findBySongArtist(artist);
-        return songIdList;
+        return songsRepository.findBySongArtist(artist);
     }
 
 
-    public void returnSearchedSongs(List<Integer> songList) {
+    public List<SongsReturnable> returnSearchedSongs(List<Integer> songList) {
+        //remove all songsReturnable
 
+        //list of something
+
+        List<SongsReturnable> returnables=new ArrayList<>();
+
+        //model
+        for(int song:songList){
+            SongsReturnable newEntry = new SongsReturnable(songsRepository.findTitleBySongId(song),
+                    songsRepository.findArtistBySongId(song), stringifyList(bpmService.getBPMsForSong(song)),
+                    stringifyList(musicKeyService.getMusicKeysForSong(song)), stringifyList(timeSignatureService.getTimeSignaturesForSong(song)));
+
+            returnables.add(newEntry);
+        }
+
+        return returnables;
+
+    }
+
+    public String stringifyList(List<?> input){
+
+        return input.stream()
+                .map(String::valueOf)
+                .filter(part -> part.charAt(0)!='-')//filter out negatives, or those that start with a minus
+                .collect(Collectors.joining(", "));
     }
 
 

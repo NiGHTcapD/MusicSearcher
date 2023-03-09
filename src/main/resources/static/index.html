@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Frontpage</title>
+    <title>Index</title>
 </head>
 <body>
 
@@ -10,11 +10,13 @@
 <!--Input song title-->
         <label for="songTitle">Song title:</label><br>
         <input type="text" id="songTitle" name="songTitle"><br>
+            <p></p>
 <!--Input artist name-->
         <label for="artist">Artist:</label><br>
         <input type="text" id="artist" name="artist"><br>
 
 
+            <p></p>
 <!--Input BPM(s)-->
         <label for="beatsPer">BPM:</label><br>
         <input type="text" id="beatsPer" name="beatsPer"><br>
@@ -23,6 +25,7 @@
         <label for="beatsPerMany">Searching for multiple BPMs? How many?</label>
         <input type="number" id="beatsPerMany" name="beatsPerMany" min="0" max="11" step="1" value="1">
 
+            <p></p>
 <!--Input key(s)-->
         <label for="musicKeys">Key:</label><br>
         <input type="text" id="musicKeys" name="musicKeys"><br>
@@ -31,25 +34,49 @@
         <label for="musicKeysMany">Searching for multiple keys? How many?</label>
         <input type="number" id="musicKeysMany" name="musicKeysMany" min="0" max="11" step="1" value="1">
 
+            <p></p>
 <!--Input time signatures(s)-->
         <label for="timeSigns">Time signature:</label><br>
         <input type="text" id="timeSigns" name="timeSigns"><br>
 <!--On-off button for multiples, disables one box and enables the other-->
 <!--dropdown for multiple signs; "yes", 2, 3, 4, 5, 6,...-->
-        <label for="timeSignsMany">Searching for multiple signatures? How many?</label><!--Double-buttoned. Fix in the future.-->
+        <label for="timeSignsMany">Searching for multiple signatures? How many?</label>
         <input type="number" id="timeSignsMany" name="timeSignsMany" min="0" max="11" step="1" value="1">
 
 
+            <p></p>
+            <p></p>
 <!--Submit button for searching-->
         <!--<button id="SearchButton">Search with all active fields</button>-->
         <input type="button" onclick="this.form.action='search'; this.form.submit()" value="Search with all active fields">
+            <p></p>
 <!--Submit button for new data-->
             <!--<button id="UpdateButton">Submit a new song with all active fields</button>--><!--Double-buttoned. Fix in the future.-->
         <input type="button" onclick="this.form.action='new-index'; this.form.submit()" value="Submit a new song with all active fields">
 
+            <p></p>
         <input type="reset">
-        <!--Doesn't hur tto have this-->
+        <!--Doesn't hurt to have this-->
     </form>
+
+
+    <p></p>
+    <table>
+        <tr th:each="returnable: ${songsReturnable}">
+            <td>Title</td>
+            <td>Artist</td>
+            <td>BPM(s)</td>
+            <td>Key(s)</td>
+            <td>Time Signature(s)</td>
+        </tr>
+        <tr th:each="returnable: ${songsReturnable}">
+            <td th:text="${returnable.songTitle}"></td>
+            <td th:text="${returnable.Artist}"></td>
+            <td th:text="${returnable.beats}"></td>
+            <td th:text="${returnable.keys}"></td>
+            <td th:text="${returnable.times}"></td>
+        </tr>
+    </table>
 
 </body>
 </html>

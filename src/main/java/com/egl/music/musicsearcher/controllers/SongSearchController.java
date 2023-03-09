@@ -1,6 +1,7 @@
 package com.egl.music.musicsearcher.controllers;
 
 
+import com.egl.music.musicsearcher.models.SongsReturnable;
 import com.egl.music.musicsearcher.services.BPMService;
 import com.egl.music.musicsearcher.services.MusicKeyService;
 import com.egl.music.musicsearcher.services.SongsService;
@@ -8,6 +9,7 @@ import com.egl.music.musicsearcher.services.TimeSignatureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -75,9 +77,9 @@ public class SongSearchController {
     }
 
     @GetMapping("search")
-    public String SearchForSongs(@ModelAttribute FrontPageRequest requestData) {
+    public String SearchForSongs(@ModelAttribute FrontPageRequest requestData, Model model) {
         //an array of Int arrays
-        List<List<Integer>> identifiers = new ArrayList();
+        List<List<Integer>> identifiers = new ArrayList<>();
 
 
         //do logic to all incoming data and strings...mostly strings
@@ -87,57 +89,60 @@ public class SongSearchController {
         identifiers.add(songsService.getSongByArtist(requestData.artist));
 
         //if beats-per-many is not 1 or 0, send it in. Otherwise, go right ahead and search.
-        if (requestData.beatsPerMany>1){identifiers.add(bpmService.getSongsWithMultipleBPM(requestData.beatsPerMany));}
-        else{identifiers.add(bpmService.getSongsByBPM(Integer.parseInt(requestData.beatsPer)));}
+        if (requestData.beatsPerMany > 1) {
+            identifiers.add(bpmService.getSongsWithMultipleBPM(requestData.beatsPerMany));
+        } else {
+            if (!"".equals(requestData.beatsPer)) {
+                identifiers.add(bpmService.getSongsByBPM(Integer.parseInt(requestData.beatsPer)));
+            }
+            else{
+                identifiers.add(null);
+            }
+        }
 
         //if music-keys-many is not 1 or 0, send it in. Otherwise, go right ahead and search.
-        if (requestData.musicKeysMany>1){identifiers.add(musicKeyService.getSongsWithMultipleMusicKeys(requestData.musicKeysMany));}
-        else{identifiers.add(musicKeyService.getSongsByMusicKeys(requestData.musicKeys));}
+        if (requestData.musicKeysMany > 1) {
+            identifiers.add(musicKeyService.getSongsWithMultipleMusicKeys(requestData.musicKeysMany));
+        } else {
+            identifiers.add(musicKeyService.getSongsByMusicKeys(requestData.musicKeys));
+        }
 
         //if time-signs-many is not 1 or 0, send it in. Otherwise, go right ahead and search.
-        if (requestData.timeSignsMany>1){identifiers.add(timeSignatureService.getSongsWithMultipleTimeSignatures(requestData.timeSignsMany));}
-        else{identifiers.add(timeSignatureService.getSongsByTimeSignatures(requestData.timeSigns));}
+        if (requestData.timeSignsMany > 1) {
+            identifiers.add(timeSignatureService.getSongsWithMultipleTimeSignatures(requestData.timeSignsMany));
+        } else {
+            identifiers.add(timeSignatureService.getSongsByTimeSignatures(requestData.timeSigns));
+        }
 
         //Consider adding logic to find multiple of an aspect, and then AND it separately.
 
-        //Add logic to detect any NULL lists, and add them to a list of aspects that returned no results so they can be ignored
-        List<Integer>nullList=null;
-        if (identifiers.get(4).equals(nullList)){
-            //Nothing found for that time signature.
-            //Excise element 4.
-        }
-        if (identifiers.get(3).equals(nullList)){
-            //Nothing found for that key.
-            //Excise element 3.
-        }
-        if (identifiers.get(2).equals(nullList)){
-            //Nothing found for that bpm.
-            //Excise element 2.
-        }
-        if (identifiers.get(1).equals(nullList)){
-            //Nothing found for that artist.
-            //Excise element 1.
-        }
-        if (identifiers.get(0).equals(nullList)){
-            //Nothing found for that song title.
-            //Excise element 0.
+        //Add logic to detect any NULL lists, and add them to a list of aspects that returned no results, so they can be ignored
+
+        for (int index= identifiers.size()-1; index>=0;index--) {
+            if (identifiers.get(index) == null) {
+                //Nothing found for that aspect.
+                //Excise element.
+                identifiers.remove(index);
+            }
         }
 
         //AND the other lists together
         //Loop ANDTwoLists(identifiers.get(0), identifiers.get(1))
         // and excising element 1
         // until identifiers is 1 long.
-        while (identifiers.size()>1){
+        while (identifiers.size() > 1) {
             ANDTwoLists(identifiers.get(0), identifiers.get(1));
             //Excise element 1.
+            identifiers.remove(1);
         }
 
-        songsService.returnSearchedSongs(identifiers.get(0));
+        List<SongsReturnable> returnables = songsService.returnSearchedSongs(identifiers.get(0));
 
         //What to do with all that data is up to javascript...
 
+        model.addAttribute("songsReturnable", returnables);
 
-        return "search Placeholder";
+        return "index.html";
     }
 
     protected List<Integer> ANDTwoLists(List<Integer> baseList, List<Integer> otherList) {

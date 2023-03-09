@@ -20,6 +20,10 @@ public interface SongsRepository extends JpaRepository<Songs, Integer> {
     List<Integer> findBySongArtist(@Param("artist") String artist);
 
     //find everything by id
+    @Query("select song.songTitle from Songs song where song.id = :songId")
+    String findTitleBySongId(@Param("songId") int songId);
+    @Query("select song.Artist from Songs song where song.id = :songId")
+    String findArtistBySongId(@Param("songId") int songId);
 
     //LatestHit (largest id)
     @Query("select MAX(album.id) from Songs album")
