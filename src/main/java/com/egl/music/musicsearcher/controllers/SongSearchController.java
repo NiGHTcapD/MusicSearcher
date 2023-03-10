@@ -141,6 +141,7 @@ public class SongSearchController {
         //What to do with all that data is up to javascript...
 
         model.addAttribute("songsReturnable", returnables);
+        System.out.print(returnables);
 
         return "index.html";
     }
