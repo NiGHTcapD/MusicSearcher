@@ -10,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.ArrayList;
@@ -47,7 +44,7 @@ public class SongSearchController {
     //    return "forward:index.html";
     //}
 
-    @GetMapping("new-index")
+    @PostMapping("new-index")
     public String indexNewSong(@ModelAttribute FrontPageRequest requestData) {
         //do logic to all incoming data and strings...mostly strings
         //take song-title at its word as the title of the song
@@ -58,7 +55,7 @@ public class SongSearchController {
         //and send them into
         songsService.createSong(requestData.songTitle, requestData.artist, beats, keys, sigs);
 
-        return "index.html";
+        return "index";
     }
 
     protected void convertToLists(FrontPageRequest requestData) {
@@ -76,7 +73,7 @@ public class SongSearchController {
                 .mapToInt(Integer::valueOf).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
-    @GetMapping("search")
+    @PostMapping("search")
     public String SearchForSongs(@ModelAttribute FrontPageRequest requestData, Model model) {
         //an array of Int arrays
         List<List<Integer>> identifiers = new ArrayList<>();
@@ -96,7 +93,7 @@ public class SongSearchController {
                 identifiers.add(bpmService.getSongsByBPM(Integer.parseInt(requestData.beatsPer)));
             }
             else{
-                identifiers.add(null);
+                identifiers.add(List.of());
             }
         }
 
@@ -119,7 +116,7 @@ public class SongSearchController {
         //Add logic to detect any NULL lists, and add them to a list of aspects that returned no results, so they can be ignored
 
         for (int index= identifiers.size()-1; index>=0;index--) {
-            if (identifiers.get(index) == null) {
+            if (identifiers.get(index).size() == 0) {
                 //Nothing found for that aspect.
                 //Excise element.
                 identifiers.remove(index);
@@ -131,9 +128,9 @@ public class SongSearchController {
         // and excising element 1
         // until identifiers is 1 long.
         while (identifiers.size() > 1) {
-            ANDTwoLists(identifiers.get(0), identifiers.get(1));
-            //Excise element 1.
+            identifiers.set(0, ANDTwoLists(identifiers.get(0), identifiers.get(1)));
             identifiers.remove(1);
+            if (identifiers.get(0).size() == 0){break;}
         }
 
         List<SongsReturnable> returnables = songsService.returnSearchedSongs(identifiers.get(0));
@@ -143,10 +140,12 @@ public class SongSearchController {
         model.addAttribute("songsReturnable", returnables);
         System.out.print(returnables);
 
-        return "index.html";
+        return "index";
     }
 
     protected List<Integer> ANDTwoLists(List<Integer> baseList, List<Integer> otherList) {
+        if (baseList.size() == 0){return otherList;}
+        if (otherList.size() == 0){return baseList;}
         return baseList.stream()
                 .distinct()
                 .filter(otherList::contains)
