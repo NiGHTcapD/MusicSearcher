@@ -22,56 +22,49 @@ public class SongsService {
     MusicKeyService musicKeyService;
     TimeSignatureService timeSignatureService;
 
-    public SongsService(SongsRepository songsRepository, BPMService bpmService, MusicKeyService musicKeyService, TimeSignatureService timeSignatureService){
-        this.songsRepository=songsRepository;
-        this.bpmService=bpmService;
-        this.musicKeyService=musicKeyService;
-        this.timeSignatureService=timeSignatureService;
+    public SongsService(SongsRepository songsRepository, BPMService bpmService, MusicKeyService musicKeyService, TimeSignatureService timeSignatureService) {
+        this.songsRepository = songsRepository;
+        this.bpmService = bpmService;
+        this.musicKeyService = musicKeyService;
+        this.timeSignatureService = timeSignatureService;
     }
 
 
     @Transactional
     public void createSong(String songTitle, String Artist, List<Integer> beats, List<String> keys, List<String> sigs) {
 
-
         Songs newSong = new Songs(songTitle, Artist);
-        Songs sung = songsRepository.saveAndFlush(newSong);
+        songsRepository.saveAndFlush(newSong);
 
+        int latest = songsRepository.LatestHit();
 
-        int latest=songsRepository.LatestHit();
-
-        for (int beat : beats)
-        {
+        for (int beat : beats) {
             bpmService.createBPMPair(beat, songTitle, latest);
         }
         //if more than one beat, add a -1 beat and a -2 if two beats, -3 if 3 beats, etc
-        if (beats.size()>1){
+        if (beats.size() > 1) {
             bpmService.createBPMPair(-1, songTitle, latest);
             bpmService.createBPMPair(-beats.size(), songTitle, latest);
         }
-        for (String key : keys)
-        {
+
+        for (String key : keys) {
             musicKeyService.createMusicKeyPair(key, songTitle, latest);
         }
         //if more than one...
-        if (keys.size()>1){
+        if (keys.size() > 1) {
             musicKeyService.createMusicKeyPair(String.valueOf(-1), songTitle, latest);
             musicKeyService.createMusicKeyPair(String.valueOf(-keys.size()), songTitle, latest);
         }
-        for (String sig : sigs)
-        {
+
+        for (String sig : sigs) {
             timeSignatureService.createTimeSignaturePair(sig, songTitle, latest);
         }
         //if more than one...
-        if (sigs.size()>1){
+        if (sigs.size() > 1) {
             timeSignatureService.createTimeSignaturePair(String.valueOf(-1), songTitle, latest);
             timeSignatureService.createTimeSignaturePair(String.valueOf(-sigs.size()), songTitle, latest);
         }
     }
-
-
-
-
 
     public List<Integer> getSongByName(String songName) {
         return songsRepository.findBySongTitle(songName);
@@ -84,14 +77,9 @@ public class SongsService {
 
 
     public List<SongsReturnable> returnSearchedSongs(List<Integer> songList) {
-        //remove all songsReturnable
+        List<SongsReturnable> returnables = new ArrayList<>();
 
-        //list of something
-
-        List<SongsReturnable> returnables=new ArrayList<>();
-
-        //model
-        for(int song:songList){
+        for (int song : songList) {
             SongsReturnable newEntry = new SongsReturnable(songsRepository.findTitleBySongId(song),
                     songsRepository.findArtistBySongId(song), stringifyList(bpmService.getBPMsForSong(song)),
                     stringifyList(musicKeyService.getMusicKeysForSong(song)), stringifyList(timeSignatureService.getTimeSignaturesForSong(song)));
@@ -103,18 +91,11 @@ public class SongsService {
 
     }
 
-    public String stringifyList(List<?> input){
+    public String stringifyList(List<?> input) {
 
         return input.stream()
                 .map(String::valueOf)
-                .filter(part -> part.charAt(0)!='-')//filter out negatives, or those that start with a minus
+                .filter(part -> part.charAt(0) != '-')//filter out negatives, or those that start with a minus
                 .collect(Collectors.joining(", "));
-    }
-
-
-    public List<Integer> ANDTwoLists(List<Integer> songList1, List<Integer> songList2) {
-
-        //probably just AND the IDs, not the songs
-        return null;
     }
 }

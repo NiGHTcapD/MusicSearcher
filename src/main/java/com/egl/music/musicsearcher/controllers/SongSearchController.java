@@ -2,58 +2,49 @@ package com.egl.music.musicsearcher.controllers;
 
 
 import com.egl.music.musicsearcher.models.SongsReturnable;
-import com.egl.music.musicsearcher.services.BPMService;
-import com.egl.music.musicsearcher.services.MusicKeyService;
+import com.egl.music.musicsearcher.services.SearchService;
 import com.egl.music.musicsearcher.services.SongsService;
-import com.egl.music.musicsearcher.services.TimeSignatureService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 public class SongSearchController {
 
     SongsService songsService;
-    BPMService bpmService;
-    MusicKeyService musicKeyService;
-    TimeSignatureService timeSignatureService;
+
+    SearchService searchService;
 
     List<Integer> beats;
     List<String> keys;
     List<String> sigs;
 
     @Autowired
-    public SongSearchController(SongsService songsService, BPMService bpmService, MusicKeyService musicKeyService, TimeSignatureService timeSignatureService) {
+    public SongSearchController(SongsService songsService, SearchService searchService) {
         this.songsService = songsService;
-        this.bpmService = bpmService;
-        this.musicKeyService = musicKeyService;
-        this.timeSignatureService = timeSignatureService;
+        this.searchService = searchService;
     }
 
-    //@GetMapping(value = "/index", produces = MediaType.TEXT_HTML_VALUE)
-    //@ResponseBody
-    //public String index(){
-    //    return "forward:index.html";
-    //}
 
     @PostMapping("new-index")
-    public String indexNewSong(@ModelAttribute FrontPageRequest requestData) {
-        //do logic to all incoming data and strings...mostly strings
-        //take song-title at its word as the title of the song
-        //take artist at its word as the artist of the song
+    public String indexNewSong(@ModelAttribute FrontPageRequest requestData, Model model) {
 
         convertToLists(requestData);
 
-        //and send them into
-        songsService.createSong(requestData.songTitle, requestData.artist, beats, keys, sigs);
+        try{
+            songsService.createSong(requestData.songTitle, requestData.artist, beats, keys, sigs);
+            model.addAttribute("message", "Save successful!");
+        }
+        catch(Exception e) {
+            model.addAttribute("message", "That didn't work for whatever reason. Please try again.");
+        }
+
 
         return "index";
     }
@@ -75,82 +66,20 @@ public class SongSearchController {
 
     @PostMapping("search")
     public String SearchForSongs(@ModelAttribute FrontPageRequest requestData, Model model) {
-        //an array of Int arrays
-        List<List<Integer>> identifiers = new ArrayList<>();
+        List<SongsReturnable> returnables = searchService.getSongsReturnables(requestData);
 
 
-        //do logic to all incoming data and strings...mostly strings
-        //take song-title at its word as the title of the song
-        identifiers.add(songsService.getSongByName(requestData.songTitle));
-        //take artist at its word as the artist of the song
-        identifiers.add(songsService.getSongByArtist(requestData.artist));
-
-        //if beats-per-many is not 1 or 0, send it in. Otherwise, go right ahead and search.
-        if (requestData.beatsPerMany > 1) {
-            identifiers.add(bpmService.getSongsWithMultipleBPM(requestData.beatsPerMany));
-        } else {
-            if (!"".equals(requestData.beatsPer)) {
-                identifiers.add(bpmService.getSongsByBPM(Integer.parseInt(requestData.beatsPer)));
-            }
-            else{
-                identifiers.add(List.of());
-            }
+        if (returnables.size()==0){
+            model.addAttribute("message", "No results.");
         }
-
-        //if music-keys-many is not 1 or 0, send it in. Otherwise, go right ahead and search.
-        if (requestData.musicKeysMany > 1) {
-            identifiers.add(musicKeyService.getSongsWithMultipleMusicKeys(requestData.musicKeysMany));
-        } else {
-            identifiers.add(musicKeyService.getSongsByMusicKeys(requestData.musicKeys));
+        else{
+            model.addAttribute("songsReturnable", returnables);
+            model.addAttribute("message", "Search successful. If results don't match an aspect, there were no matches for that part.");
         }
-
-        //if time-signs-many is not 1 or 0, send it in. Otherwise, go right ahead and search.
-        if (requestData.timeSignsMany > 1) {
-            identifiers.add(timeSignatureService.getSongsWithMultipleTimeSignatures(requestData.timeSignsMany));
-        } else {
-            identifiers.add(timeSignatureService.getSongsByTimeSignatures(requestData.timeSigns));
-        }
-
-        //Consider adding logic to find multiple of an aspect, and then AND it separately.
-
-        //Add logic to detect any NULL lists, and add them to a list of aspects that returned no results, so they can be ignored
-
-        for (int index= identifiers.size()-1; index>=0;index--) {
-            if (identifiers.get(index).size() == 0) {
-                //Nothing found for that aspect.
-                //Excise element.
-                identifiers.remove(index);
-            }
-        }
-
-        //AND the other lists together
-        //Loop ANDTwoLists(identifiers.get(0), identifiers.get(1))
-        // and excising element 1
-        // until identifiers is 1 long.
-        while (identifiers.size() > 1) {
-            identifiers.set(0, ANDTwoLists(identifiers.get(0), identifiers.get(1)));
-            identifiers.remove(1);
-            if (identifiers.get(0).size() == 0){break;}
-        }
-
-        List<SongsReturnable> returnables = songsService.returnSearchedSongs(identifiers.get(0));
-
-        //What to do with all that data is up to javascript...
-
-        model.addAttribute("songsReturnable", returnables);
-        System.out.print(returnables);
 
         return "index";
     }
 
-    protected List<Integer> ANDTwoLists(List<Integer> baseList, List<Integer> otherList) {
-        if (baseList.size() == 0){return otherList;}
-        if (otherList.size() == 0){return baseList;}
-        return baseList.stream()
-                .distinct()
-                .filter(otherList::contains)
-                .collect(Collectors.toList());
-    }
 
 
 }
