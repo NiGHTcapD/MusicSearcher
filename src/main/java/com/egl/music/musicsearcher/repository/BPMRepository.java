@@ -14,7 +14,7 @@ public interface BPMRepository extends JpaRepository<BPM, Integer> {
     @Query("select b.songId from BPM b where b.beatsPerMinute = :bpm")
     List<Integer> findByBPM(@Param("bpm") int bpm);
 
-    @Query("select b.beatsPerMinute from BPM b where b.id = :songId")
+    @Query("select b.beatsPerMinute from BPM b where b.songId = :songId")
     List<Integer> findBPMBySongId(@Param("songId") int songId);
 
 }

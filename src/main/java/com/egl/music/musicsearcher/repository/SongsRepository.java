@@ -12,11 +12,11 @@ import java.util.List;
 public interface SongsRepository extends JpaRepository<Songs, Integer> {
 
     //find id by title
-    @Query("select song.id from Songs song where song.songTitle LIKE '%title%'")
+    @Query("select song.id from Songs song where song.songTitle LIKE %:title%")
     List<Integer> findBySongTitle(@Param("title") String title);
 
     //find id by artist
-    @Query("select song.id from Songs song where song.Artist LIKE '%artist%'")
+    @Query("select song.id from Songs song where song.Artist LIKE %:artist%")
     List<Integer> findBySongArtist(@Param("artist") String artist);
 
     //find everything by id

@@ -11,7 +11,6 @@ class SearchServiceTest {
 
     SearchService searchService = new SearchService(null,null,null,null);
 
-
     @Test
     void ANDTwoLists(){
 

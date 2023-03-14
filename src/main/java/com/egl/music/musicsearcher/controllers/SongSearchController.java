@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -60,6 +61,9 @@ public class SongSearchController {
     }
 
     protected List<Integer> convertStringToIntegerList(String string) {
+        if (string.isEmpty()){
+            return Collections.emptyList();
+        }
         return Arrays.stream(string.split("\\s*,\\s*"))
                 .mapToInt(Integer::valueOf).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }

@@ -44,8 +44,10 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
+                .headers().frameOptions().disable()
+                .and()
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/","/**").permitAll()
+                        .requestMatchers("/", "/**", "/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
@@ -62,7 +64,6 @@ public class SecurityConfiguration {
                         .deleteCookies("JSESSIONID")
                         .clearAuthentication(true)
                         .permitAll()).exceptionHandling().accessDeniedPage("/403");
-
 
 
         return http.build();

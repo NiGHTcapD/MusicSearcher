@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,11 +68,17 @@ public class SongsService {
     }
 
     public List<Integer> getSongByName(String songName) {
+        if ("".equals(songName)){
+            return Collections.emptyList();
+        }
         return songsRepository.findBySongTitle(songName);
     }
 
 
     public List<Integer> getSongByArtist(String artist) {
+        if ("".equals(artist)){
+            return Collections.emptyList();
+        }
         return songsRepository.findBySongArtist(artist);
     }
 
@@ -92,10 +99,14 @@ public class SongsService {
     }
 
     public String stringifyList(List<?> input) {
-
-        return input.stream()
-                .map(String::valueOf)
-                .filter(part -> part.charAt(0) != '-')//filter out negatives, or those that start with a minus
-                .collect(Collectors.joining(", "));
+        try {
+            return input.stream()
+                    .map(String::valueOf)
+                    .filter(part -> part.charAt(0) != '-')//filter out negatives, or those that start with a minus
+                    .collect(Collectors.joining(", "));
+        }
+        catch (Exception e){
+            return " ";
+        }
     }
 }

@@ -14,7 +14,7 @@ public interface MusicKeyRepository extends JpaRepository<MusicKey, Integer> {
     @Query("select mk.songId from MusicKey mk where mk.musicKey = :key")
     List<Integer> findByMusicKey(@Param("key") String key);
 
-    @Query("select mk.musicKey from MusicKey mk where mk.id = :songId")
+    @Query("select mk.musicKey from MusicKey mk where mk.songId = :songId")
     List<String> findMusicKeyBySongId(@Param("songId") int songId);
 
 }

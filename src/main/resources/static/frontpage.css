@@ -1,0 +1,27 @@
+body {
+  background-color: #ede4d8;
+}
+
+form {
+  margin-left: 45px;
+  margin-top: 50px;
+  margin-bottom: 30px;
+}
+
+table {
+  margin-left: 20px;
+  margin-top: 30px;
+}
+
+table tr{
+    border-left: 1px solid #000080;
+    border-right: 1px solid #000080;
+    border-top: 1px solid #000080;
+    border-bottom: 1px solid #000080;
+}
+table td{
+    border-left: 1px solid lightblue;
+    border-right: 1px solid lightblue;
+    border-top: 1px solid #000080;
+    border-bottom: 1px solid #000080;
+}

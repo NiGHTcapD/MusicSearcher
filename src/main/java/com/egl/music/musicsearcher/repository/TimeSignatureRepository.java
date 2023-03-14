@@ -14,7 +14,7 @@ public interface TimeSignatureRepository extends JpaRepository<TimeSignature, In
     @Query("select ts.songId from TimeSignature ts where ts.timeSignature = :signature")
     List<Integer> findByTimeSignature(@Param("signature") String signature);
 
-    @Query("select ts.timeSignature from TimeSignature ts where ts.id = :songId")
+    @Query("select ts.timeSignature from TimeSignature ts where ts.songId = :songId")
     List<String> findTimeSignatureBySongId(@Param("songId") int songId);
 
 }
