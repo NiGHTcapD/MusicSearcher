@@ -8,7 +8,6 @@ import lombok.*;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-//@RequiredArgsConstructor
 @Table(name = "TimeSignature")
 @Entity
 public class TimeSignature {

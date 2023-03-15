@@ -10,7 +10,6 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-//@RequiredArgsConstructor
 @Table(name = "songs")
 @Entity
 public class Songs {
@@ -30,17 +29,4 @@ public class Songs {
         songTitle=newSongTitle;
         Artist=newArtist;
     }
-
-    public static Integer latestHit(String songTitle) {//helper function
-        return null;
-    }//Song Title only here for verification. Otherwise, return highest value.
-
-
-    /*@Column
-    @ToString.Exclude
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
-    @JoinTable(name="student_courses",
-            joinColumns = @JoinColumn(name="student_email"),
-            inverseJoinColumns = @JoinColumn(name="courses_id"))
-    List<Course> courses = new ArrayList<Course>();*/
 }

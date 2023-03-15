@@ -51,6 +51,7 @@ public class SongSearchController {
     }
 
     protected void convertToLists(FrontPageRequest requestData) {
+        //splitting the string into ints was a little more complicated than string-to-strings.
         beats = convertStringToIntegerList(requestData.beatsPer);
 
         //look for split characters in music-keys

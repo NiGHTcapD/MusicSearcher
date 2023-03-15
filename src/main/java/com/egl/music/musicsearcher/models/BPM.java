@@ -10,7 +10,6 @@ import java.util.List;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-//@RequiredArgsConstructor
 @Table(name = "BPM")
 @Entity
 public class BPM {
@@ -19,7 +18,6 @@ public class BPM {
     @GeneratedValue
     int IDgnorable;
 
-    //@Id
     @Column
     int beatsPerMinute;
 
@@ -34,19 +32,4 @@ public class BPM {
         this.songName=songName;
         this.songId=id;
     }
-
-
-    public static List<Integer> findByBPM(int bpm) {//helper function
-        return null;
-    }
-
-    public static List<Integer> findBPMBySongId(int songId) {//helper function
-        return null;
-    }
-
-    /*public BPM(int newBeats, String newSong, int newID) {
-        beatsPerMinute=newBeats;
-        songName=newSong;
-        songId=newID;
-    }*/
 }

@@ -19,28 +19,19 @@ public class MusicKeyService{
         return musicKeyRepository.saveAndFlush(newMusicKey);
     }
 
-
-    //GetMapping("/getSongsByBPM")
     public List<Integer> getSongsByMusicKeys(String key) {
-        //log.warn("Searching BPM table for entries...");
-        List<Integer> songIdList = musicKeyRepository.findByMusicKey(key);
-        return songIdList;
+        return musicKeyRepository.findByMusicKey(key);
     }
 
     public List<Integer> getSongsWithMultipleMusicKeys() {
-        //log.warn("Searching BPM table for entries...");
-        List<Integer> songIdList = musicKeyRepository.findByMusicKey("-1");
-        return songIdList;
+        return musicKeyRepository.findByMusicKey("-1");
     }
 
     public List<Integer> getSongsWithMultipleMusicKeys(int atLeastThisMany) {
-        //log.warn("Searching BPM table for entries...");
-        List<Integer> songIdList = musicKeyRepository.findByMusicKey(String.valueOf(-atLeastThisMany));
-        return songIdList;
+        return musicKeyRepository.findByMusicKey(String.valueOf(-atLeastThisMany));
     }
 
     public List<String> getMusicKeysForSong(int songId) {
-        List<String> songIdList = musicKeyRepository.findMusicKeyBySongId(songId);
-        return songIdList;
+        return musicKeyRepository.findMusicKeyBySongId(songId);
     }
 }

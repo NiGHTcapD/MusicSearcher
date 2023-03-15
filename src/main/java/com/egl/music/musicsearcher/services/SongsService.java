@@ -2,9 +2,7 @@ package com.egl.music.musicsearcher.services;
 
 import com.egl.music.musicsearcher.models.Songs;
 import com.egl.music.musicsearcher.models.SongsReturnable;
-import com.egl.music.musicsearcher.models.TimeSignature;
 import com.egl.music.musicsearcher.repository.SongsRepository;
-import com.egl.music.musicsearcher.repository.TimeSignatureRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,8 +10,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.egl.music.musicsearcher.models.Songs.latestHit;
 
 @Service
 public class SongsService {

@@ -20,35 +20,20 @@ public class BPMService {
         return bpmRepository.saveAndFlush(newBPM);
     }
 
-
-    //GetMapping("/getSongsByBPM")
     public List<Integer> getSongsByBPM(int bpm) {
-        //log.warn("Searching BPM table for entries...");
-        List<Integer> songIdList = bpmRepository.findByBPM(bpm);
-        return songIdList;
+        return bpmRepository.findByBPM(bpm);
     }
-
 
     public List<Integer> getSongsWithMultipleBPM() {
-        //log.warn("Searching BPM table for entries...");
-        List<Integer> songIdList = bpmRepository.findByBPM(-1);
-        return songIdList;
+        return bpmRepository.findByBPM(-1);
     }
 
-
-
-    //@GetMapping("/getSongsByBPM")
     public List<Integer> getSongsWithMultipleBPM(int atLeastThisMany) {
-        //log.warn("Searching BPM table for entries...");
-        List<Integer> songIdList = bpmRepository.findByBPM(-atLeastThisMany);
-        return songIdList;
+        return bpmRepository.findByBPM(-atLeastThisMany);
     }
-
-
 
     public List<Integer> getBPMsForSong(int songId) {
-        List<Integer> songIdList = bpmRepository.findBPMBySongId(songId);
-        return songIdList;
+        return bpmRepository.findBPMBySongId(songId);
     }
 
 }

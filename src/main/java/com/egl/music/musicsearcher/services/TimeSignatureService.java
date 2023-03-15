@@ -23,17 +23,14 @@ public class TimeSignatureService{
 
     //GetMapping("/getSongsByBPM")
     public List<Integer> getSongsByTimeSignatures(String sig) {
-        //log.warn("Searching BPM table for entries...");
         return timeSignatureRepository.findByTimeSignature(sig);
     }
 
     public List<Integer> getSongsWithMultipleTimeSignatures() {
-        //log.warn("Searching BPM table for entries...");
         return timeSignatureRepository.findByTimeSignature("-1");
     }
 
     public List<Integer> getSongsWithMultipleTimeSignatures(int atLeastThisMany) {
-        //log.warn("Searching BPM table for entries...");
         return timeSignatureRepository.findByTimeSignature(String.valueOf(-atLeastThisMany));
     }
 

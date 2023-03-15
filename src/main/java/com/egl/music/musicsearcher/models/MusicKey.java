@@ -8,7 +8,6 @@ import lombok.*;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-//@RequiredArgsConstructor
 @Table(name = "MusicKey")
 @Entity
 public class MusicKey {
